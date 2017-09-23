@@ -1,2 +1,3 @@
 # Ajax-project
-Really simple ajax project 
+
+Just fooling around with Ajax. 
