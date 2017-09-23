@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script>
+				document.addEventListener('DOMContentLoaded', weatherButton);
+				document.getElementById("Contentsubmit").addEventListener('click', function(event){
+				
+				
+						var req = new XMLHttpRequest();
+						var payload = document.getElementById("Content")
+						req.open('POST', 'http://httpbin.org/post', true);
+						req.setRequestHeader('Content-Type', 'application/json');
+						req.addEventListener('load',function(){
+								if(req.status >= 200 && req.status < 400){
+										var response = JSON.parse(req.responseText);
+										document.getElementById('originalUrl').textContent = response.longUrl;
+										document.getElementById('shortUrl').textContent = response.id;
+								} else {
+										console.log("Error in network request: " + request.statusText);
+								}
+						});
+						req.send(JSON.stringify(payload));
+						event.preventDefault();
+				});
+				
+				
+				
+				function weatherButton(){
+						document.getElementById('Citysubmit').addEventListener('click', function(event){
+								var req = new XMLHttpRequest();
+								var city = document.getElementById("City").value;
+								var firstChar = city.charAt(0);
+								if( (firstChar <='9' && firstChar >='0')&& (firstChar != null)) {
+										req.open("GET", "http://api.openweathermap.org/data/2.5/weather?zip="+city+",us&appid=387b0b86cdce5c9c9d651b8dc24efb40", true);
+								}
+								else{req.open("GET", "http://api.openweathermap.org/data/2.5/weather?q="+city+"&appid=387b0b86cdce5c9c9d651b8dc24efb40", true);}
+								req.send(null);
+								req.addEventListener('load',function(){
+									if(req.status >= 200 && req.status < 400){
+										var response = JSON.parse(req.responseText);
+										console.log("Get weather: Success");
+													
+										var weather = document.createElement("LI");
+										var other = document.createElement("LI");
+											
+										var temp = document.createTextNode("Temp: "+response.main.temp);
+										var humid = document.createTextNode("Humidity: "+response.main.humidity);
+													
+										weather.appendChild(temp);
+										other.appendChild(humid);
+													
+										document.getElementById("LocalWeather").appendChild(weather);
+										document.getElementById("LocalWeather").appendChild(other);
+													
+									} else {
+											console.log("Error in network request: " + request.statusText);
+									}
+								});
+								event.preventDefault();
+					});
+					
+				}
+					
+     
+    </script>
+  </head>
+  <body>
+  <form>
+      <fieldset>
+        <legend>Get Local Weather by City Name or Zip</legend>
+        <label for="Weather"></label>
+        <input type="text" name="City" id="City">
+        <input type="submit" id="Citysubmit">
+      </fieldset>
+    </form>
+	<form>
+      <fieldset>
+        <legend>Post to httpbin.org</legend>
+        <label for="httpbin"></label>
+        <input type="text" name="Content" id="Content">
+        <input type="submit" id="Contentsubmit">
+      </fieldset>
+    </form>
+  <div>
+      <h2>Local Weather</h2>
+      <ul id="LocalWeather">
+      </ul>
+    </div>
+  </body>
+</html>
